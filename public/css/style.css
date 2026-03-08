@@ -1,0 +1,97 @@
+:root {
+    --primary-gold: #D4AF37;
+    --secondary-gold: #FFD700;
+    --dark-gold: #996515;
+    --charity-red: #B22222;
+    --light-bg: #FFFDF5;
+}
+
+body {
+    background-color: var(--light-bg);
+    font-family: 'Inter', sans-serif;
+    color: #333;
+}
+
+.hero-section {
+    background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+    color: white;
+    padding: 60px 0;
+    border-bottom-left-radius: 50% 20px;
+    border-bottom-right-radius: 50% 20px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+}
+
+.slogan {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: var(--charity-red);
+}
+
+.payment-card {
+    border: none;
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+
+.payment-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+}
+
+.provider-logo {
+    height: 50px;
+    object-fit: contain;
+    margin-bottom: 10px;
+}
+
+.btn-ussd {
+    background-color: var(--primary-gold);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    padding: 10px 20px;
+    font-weight: 600;
+    width: 100%;
+}
+
+.btn-ussd:hover {
+    background-color: var(--dark-gold);
+    color: white;
+}
+
+.bank-details {
+    font-size: 0.9rem;
+}
+
+.copy-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: rgba(212, 175, 55, 0.1);
+    color: var(--primary-gold);
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.section-title {
+    color: var(--dark-gold);
+    font-weight: 800;
+    margin-bottom: 30px;
+    position: relative;
+    display: inline-block;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 50%;
+    height: 3px;
+    background: var(--charity-red);
+}
