@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kibubu-v1';
+const CACHE_NAME = 'kibubu-v2';
 const urlsToCache = [
   '/',
   '/css/style.css',
@@ -9,15 +9,42 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting(); // Force the waiting service worker to become the active service worker
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
   );
 });
 
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName); // Delete old caches
+          }
+        })
+      );
+    }).then(() => self.clients.claim()) // Claim clients immediately
+  );
+});
+
 self.addEventListener('fetch', event => {
+  // Network-First Strategy for all requests
   event.respondWith(
-    caches.match(event.request)
-      .then(response => response || fetch(event.request))
+    fetch(event.request).then(response => {
+      // If network works, update the cache and return the network response
+      const responseClone = response.clone();
+      if (event.request.method === 'GET') {
+          caches.open(CACHE_NAME).then(cache => {
+            cache.put(event.request, responseClone);
+          });
+      }
+      return response;
+    }).catch(() => {
+      // Offline fallback: try to serve from cache
+      return caches.match(event.request);
+    })
   );
 });

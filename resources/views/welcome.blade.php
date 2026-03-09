@@ -182,7 +182,12 @@
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/service-worker.js');
+                navigator.serviceWorker.register('/service-worker.js').then(registration => {
+                    // Check for updates to the service worker immediately
+                    registration.update();
+                }).catch(error => {
+                    console.log('ServiceWorker registration failed: ', error);
+                });
             });
         }
     </script>
