@@ -78,6 +78,7 @@ class PaymentController extends Controller
 
     public function updateProvider(Request $request, $id)
     {
+        \Log::info('Update Provider Request Data:', $request->all());
         $request->validate([
             'name' => 'required|string',
             'type' => 'required|in:mobile_money,bank',

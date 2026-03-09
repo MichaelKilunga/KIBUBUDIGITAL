@@ -479,7 +479,8 @@
 
     function editProvider(p) {
         document.getElementById('modalTitle').innerText = 'Edit Provider';
-        document.getElementById('providerForm').action = `/admin/providers/${p.id}/update`;
+        let updateUrl = "{{ route('admin.providers.update', ':id') }}".replace(':id', p.id);
+        document.getElementById('providerForm').action = updateUrl;
         document.getElementById('methodField').value = 'PUT';
         document.getElementById('p_name').value = p.name;
         document.getElementById('p_type').value = p.type;
@@ -498,6 +499,27 @@
         document.getElementById('providerForm').reset();
         document.getElementById('saveBtn').innerText = 'Save Provider';
         toggleFields();
+    });
+
+    // Restore active tab from localStorage if available
+    document.addEventListener('DOMContentLoaded', function () {
+        const activeTab = localStorage.getItem('kibubu_admin_active_tab');
+        if (activeTab) {
+            const tabButton = document.querySelector(`button[data-bs-target="${activeTab}"]`);
+            if (tabButton) {
+                const tabInstance = new bootstrap.Tab(tabButton);
+                tabInstance.show();
+            }
+        }
+
+        // Save active tab to localStorage when a tab is shown
+        const tabList = document.querySelectorAll('button[data-bs-toggle="tab"]');
+        tabList.forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function (event) {
+                const target = event.target.getAttribute('data-bs-target');
+                localStorage.setItem('kibubu_admin_active_tab', target);
+            });
+        });
     });
 </script>
 </body>
