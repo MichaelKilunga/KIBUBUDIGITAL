@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('messages.dashboard') }} - Kibubu Digital</title>
+    <title>{{ __('messages.dashboard') }} - {{ $allSettings['site_name'] ?? 'Kibubu Digital' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -48,7 +50,7 @@
     <div class="row">
         <!-- Sidebar -->
         <nav class="col-md-2 d-none d-md-block sidebar p-3">
-            <h4 class="mb-4">Kibubu Admin</h4>
+            <h4 class="mb-4">{{ $allSettings['site_name'] ?? 'Kibubu Admin' }}</h4>
             <ul class="nav flex-column">
                 <li class="nav-item">
                     <a class="nav-link active" href="#"><i class="fas fa-chart-line me-2"></i> {{ __('messages.dashboard') }}</a>
@@ -97,7 +99,13 @@
                     <button class="nav-link active" id="overview-tab" data-bs-toggle="tab" data-bs-target="#overview" type="button"><i class="fas fa-home me-1"></i> {{ __('messages.overview') }}</button>
                 </li>
                 <li class="nav-item">
-                    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button"><i class="fas fa-cog me-1"></i> {{ __('messages.branding') }}</button>
+                    <button class="nav-link" id="settings-tab" data-bs-toggle="tab" data-bs-target="#settings" type="button"><i class="fas fa-palette me-1"></i> {{ __('messages.branding') }}</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="content-tab" data-bs-toggle="tab" data-bs-target="#content" type="button"><i class="fas fa-edit me-1"></i> Content</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link" id="providers-tab" data-bs-toggle="tab" data-bs-target="#providers" type="button"><i class="fas fa-list me-1"></i> Providers</button>
                 </li>
                 <li class="nav-item">
                     <button class="nav-link" id="smtp-tab" data-bs-toggle="tab" data-bs-target="#smtp" type="button"><i class="fas fa-envelope me-1"></i> {{ __('messages.email_smtp') }}</button>
@@ -182,6 +190,10 @@
                             <form action="{{ route('admin.settings.save') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
+                                    <label class="form-label">Site Name</label>
+                                    <input type="text" name="site_name" class="form-control" value="{{ $allSettings['site_name'] ?? 'Kibubu Digital' }}">
+                                </div>
+                                <div class="mb-3">
                                     <label class="form-label">{{ __('messages.primary_gold') }}</label>
                                     <input type="color" name="primary_color" class="form-control form-control-color w-100" value="{{ $allSettings['primary_color'] ?? '#D4AF37' }}">
                                 </div>
@@ -195,6 +207,125 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary">{{ __('messages.save_branding') }}</button>
                             </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Management Tab -->
+                <div class="tab-pane fade" id="content">
+                    <div class="card shadow-sm col-md-10">
+                        <div class="card-body">
+                            <h5 class="card-title mb-4">Landing Page Content</h5>
+                            <form action="{{ route('admin.settings.save') }}" method="POST">
+                                @csrf
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <h6>English (EN)</h6>
+                                        <div class="mb-3">
+                                            <label class="form-label">Hero Title</label>
+                                            <input type="text" name="hero_title_en" class="form-control" value="{{ $allSettings['hero_title_en'] ?? '' }}" placeholder="{{ __('messages.hero_title') }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Slogan</label>
+                                            <input type="text" name="slogan_en" class="form-control" value="{{ $allSettings['slogan_en'] ?? '' }}" placeholder="{{ __('messages.slogan') }}">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Hero Lead</label>
+                                            <textarea name="hero_lead_en" class="form-control" rows="2" placeholder="{{ __('messages.hero_lead') }}">{{ $allSettings['hero_lead_en'] ?? '' }}</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Footer Text</label>
+                                            <input type="text" name="footer_text_en" class="form-control" value="{{ $allSettings['footer_text_en'] ?? '' }}" placeholder="Kibubu Digital. All Rights Reserved.">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <h6>Kiswahili (SW)</h6>
+                                        <div class="mb-3">
+                                            <label class="form-label">Hero Title (SW)</label>
+                                            <input type="text" name="hero_title_sw" class="form-control" value="{{ $allSettings['hero_title_sw'] ?? '' }}" placeholder="Kibubu Changu na Dorcas">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Slogan (SW)</label>
+                                            <input type="text" name="slogan_sw" class="form-control" value="{{ $allSettings['slogan_sw'] ?? '' }}" placeholder="Kidogo changu, makazi yao!">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Hero Lead (SW)</label>
+                                            <textarea name="hero_lead_sw" class="form-control" rows="2" placeholder="Mchango wako mdogo unajenga makazi kwa wahitaji.">{{ $allSettings['hero_lead_sw'] ?? '' }}</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Footer Text (SW)</label>
+                                            <input type="text" name="footer_text_sw" class="form-control" value="{{ $allSettings['footer_text_sw'] ?? '' }}" placeholder="Haki zote zimehifadhiwa.">
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Mobile Money Section Title (EN)</label>
+                                            <input type="text" name="mobile_money_title_en" class="form-control" value="{{ $allSettings['mobile_money_title_en'] ?? '' }}" placeholder="Mobile Money">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Bank Section Title (EN)</label>
+                                            <input type="text" name="bank_title_en" class="form-control" value="{{ $allSettings['bank_title_en'] ?? '' }}" placeholder="Bank Transfer">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Mobile Money Section Title (SW)</label>
+                                            <input type="text" name="mobile_money_title_sw" class="form-control" value="{{ $allSettings['mobile_money_title_sw'] ?? '' }}" placeholder="Pesa ya Mtandao">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Bank Section Title (SW)</label>
+                                            <input type="text" name="bank_title_sw" class="form-control" value="{{ $allSettings['bank_title_sw'] ?? '' }}" placeholder="Benki">
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save Content Changes</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Provider Management Tab -->
+                <div class="tab-pane fade" id="providers">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                            <h5 class="mb-0">Payment Providers</h5>
+                            <button class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#addProviderModal">
+                                <i class="fas fa-plus me-1"></i> Add Provider
+                            </button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Type</th>
+                                        <th>Account/USSD</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $allProviders = \App\Models\PaymentProvider::all();
+                                    @endphp
+                                    @foreach($allProviders as $p)
+                                    <tr>
+                                        <td>{{ $p->name }}</td>
+                                        <td><span class="badge bg-secondary">{{ strtoupper($p->type) }}</span></td>
+                                        <td><code>{{ $p->ussd_string ?? $p->account_number }}</code></td>
+                                        <td>
+                                            <button class="btn btn-sm btn-outline-primary" onclick="editProvider({{ json_encode($p) }})"><i class="fas fa-edit"></i></button>
+                                            <form action="{{ route('admin.providers.delete', $p->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Delete this provider?')">
+                                                @csrf @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="fas fa-trash"></i></button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
@@ -265,6 +396,49 @@
     </div>
 </div>
 
+<!-- Add/Edit Provider Modal -->
+<div class="modal fade" id="addProviderModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Add Payment Provider</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="providerForm" action="{{ route('admin.providers.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="_method" id="methodField" value="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Provider Name</label>
+                        <input type="text" name="name" id="p_name" class="form-control" required placeholder="e.g. M-PESA, CRDB">
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Type</label>
+                        <select name="type" id="p_type" class="form-select" required onchange="toggleFields()">
+                            <option value="mobile_money">Mobile Money</option>
+                            <option value="bank">Bank</option>
+                        </select>
+                    </div>
+                    <div id="mobileFields">
+                        <div class="mb-3">
+                            <label class="form-label">USSD String</label>
+                            <input type="text" name="ussd_string" id="p_ussd" class="form-control" placeholder="*150*00#">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Account Number</label>
+                        <input type="text" name="account_number" id="p_account" class="form-control" required placeholder="12345678">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="saveBtn">Save Provider</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
@@ -295,6 +469,35 @@
         e.preventDefault();
         const settingsTab = new bootstrap.Tab(document.getElementById('settings-tab'));
         settingsTab.show();
+    });
+
+    function toggleFields() {
+        const type = document.getElementById('p_type').value;
+        document.getElementById('mobileFields').style.display = type === 'mobile_money' ? 'block' : 'none';
+        document.getElementById('p_ussd').required = type === 'mobile_money';
+    }
+
+    function editProvider(p) {
+        document.getElementById('modalTitle').innerText = 'Edit Provider';
+        document.getElementById('providerForm').action = `/admin/providers/${p.id}/update`;
+        document.getElementById('methodField').value = 'PUT';
+        document.getElementById('p_name').value = p.name;
+        document.getElementById('p_type').value = p.type;
+        document.getElementById('p_ussd').value = p.ussd_string || '';
+        document.getElementById('p_account').value = p.account_number;
+        document.getElementById('saveBtn').innerText = 'Update Provider';
+        toggleFields();
+        new bootstrap.Modal(document.getElementById('addProviderModal')).show();
+    }
+
+    // Reset modal on close
+    document.getElementById('addProviderModal').addEventListener('hidden.bs.modal', function () {
+        document.getElementById('modalTitle').innerText = 'Add Payment Provider';
+        document.getElementById('providerForm').action = "{{ route('admin.providers.store') }}";
+        document.getElementById('methodField').value = 'POST';
+        document.getElementById('providerForm').reset();
+        document.getElementById('saveBtn').innerText = 'Save Provider';
+        toggleFields();
     });
 </script>
 </body>

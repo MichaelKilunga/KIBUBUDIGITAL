@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ __('messages.login_title') }} - Kibubu Digital</title>
+    <title>{{ __('messages.login_title') }} - {{ $allSettings['site_name'] ?? 'Kibubu Digital' }}</title>
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
@@ -31,7 +33,7 @@
 
 <div class="card login-card p-4">
     <div class="text-center mb-4">
-        <h2 class="fw-bold">Kibubu Admin</h2>
+        <h2 class="fw-bold">{{ $allSettings['site_name'] ?? 'Kibubu Admin' }}</h2>
         <p class="text-muted">{{ __('messages.login_subtitle') }}</p>
     </div>
 

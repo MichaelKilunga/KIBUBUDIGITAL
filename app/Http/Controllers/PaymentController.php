@@ -14,6 +14,10 @@ class PaymentController extends Controller
         $bankProviders = PaymentProvider::where('type', 'bank')->get();
         $allSettings = \App\Models\Setting::all()->pluck('value', 'key');
         
+        if (isset($allSettings['site_name'])) {
+            config(['app.name' => $allSettings['site_name']]);
+        }
+        
         return view('welcome', compact('mobileProviders', 'bankProviders', 'allSettings'));
     }
 
@@ -41,9 +45,10 @@ class PaymentController extends Controller
             ->groupBy('provider_name')
             ->get();
         
-        $settings = PaymentProvider::all(); // Wait, this is providers. Settings should be from Settings model.
-        // Let's fix this in the next tool call properly.
         $allSettings = \App\Models\Setting::all()->pluck('value', 'key');
+        if (isset($allSettings['site_name'])) {
+            config(['app.name' => $allSettings['site_name']]);
+        }
 
         return view('admin.dashboard', compact('intents', 'totalIntents', 'providerStats', 'allSettings'));
     }
@@ -57,5 +62,37 @@ class PaymentController extends Controller
         }
 
         return back()->with('success', __('messages.success_settings'));
+    }
+
+    public function storeProvider(Request $request)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'type' => 'required|in:mobile_money,bank',
+            'account_number' => 'required|string',
+        ]);
+
+        PaymentProvider::create($request->all());
+        return back()->with('success', 'Provider added successfully!');
+    }
+
+    public function updateProvider(Request $request, $id)
+    {
+        $request->validate([
+            'name' => 'required|string',
+            'type' => 'required|in:mobile_money,bank',
+            'account_number' => 'required|string',
+        ]);
+
+        $provider = PaymentProvider::findOrFail($id);
+        $provider->update($request->all());
+        return back()->with('success', 'Provider updated successfully!');
+    }
+
+    public function deleteProvider($id)
+    {
+        $provider = PaymentProvider::findOrFail($id);
+        $provider->delete();
+        return back()->with('success', 'Provider deleted successfully!');
     }
 }

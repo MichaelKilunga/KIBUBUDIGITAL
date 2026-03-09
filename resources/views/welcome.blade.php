@@ -4,10 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Kibubu Changu na Dorcas - Charity Drive</title>
+    <title>{{ $allSettings['site_name'] ?? 'Kibubu Changu na Dorcas' }} - Charity Drive</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="{{ $allSettings['primary_color'] ?? '#D4AF37' }}">
-    <link rel="apple-touch-icon" href="/images/logo.png">
+    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -69,16 +70,16 @@
             <a href="{{ route('login') }}" class="btn btn-sm btn-outline-light border-0 opacity-75"><i class="fas fa-lock me-1"></i> {{ __('messages.admin') }}</a>
         </div>
         <div class="container">
-            <h1 class="display-5 fw-bold mb-3">{{ __('messages.hero_title') }}</h1>
-            <p class="slogan mb-4">{{ __('messages.slogan') }}</p>
-            <p class="lead px-4">{{ __('messages.hero_lead') }}</p>
+            <h1 class="display-5 fw-bold mb-3">{{ $allSettings['hero_title_' . app()->getLocale()] ?? __('messages.hero_title') }}</h1>
+            <p class="slogan mb-4">{{ $allSettings['slogan_' . app()->getLocale()] ?? __('messages.slogan') }}</p>
+            <p class="lead px-4">{{ $allSettings['hero_lead_' . app()->getLocale()] ?? __('messages.hero_lead') }}</p>
         </div>
     </section>
 
     <div class="container my-5">
         <!-- Mobile Money Section -->
         <div class="mb-5">
-            <h2 class="section-title">{{ __('messages.mobile_money') }}</h2>
+            <h2 class="section-title">{{ $allSettings['mobile_money_title_' . app()->getLocale()] ?? __('messages.mobile_money') }}</h2>
             <div class="row g-3">
                 @foreach($mobileProviders as $provider)
                 <div class="col-6 col-md-3">
@@ -94,7 +95,7 @@
 
         <!-- Bank Section -->
         <div>
-            <h2 class="section-title">{{ __('messages.bank_transfer') }}</h2>
+            <h2 class="section-title">{{ $allSettings['bank_title_' . app()->getLocale()] ?? __('messages.bank_transfer') }}</h2>
             <div class="row g-3">
                 @foreach($bankProviders as $provider)
                 <div class="col-12 col-md-4">
@@ -113,7 +114,7 @@
     </div>
 
     <footer class="text-center py-4 text-muted border-top">
-        <p class="mb-0">&copy; {{ date('Y') }} Kibubu Digital. {{ __('messages.footer_rights') }}</p>
+        <p class="mb-0">&copy; {{ date('Y') }} {{ $allSettings['site_name'] ?? 'Kibubu Digital' }}. {{ $allSettings['footer_text_' . app()->getLocale()] ?? __('messages.footer_rights') }}</p>
     </footer>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

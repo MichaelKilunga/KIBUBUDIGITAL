@@ -23,5 +23,10 @@ Route::get('/lang/{locale}', function ($locale) {
 // Protected Admin Routes
 Route::middleware(['auth'])->prefix('admin/kibubu')->group(function () {
     Route::get('/', [PaymentController::class, 'admin'])->name('admin.dashboard');
-    Route::post('/settings', [PaymentController::class, 'saveSettings'])->name('admin.settings.save');
+    Route::post('/admin/settings/save', [PaymentController::class, 'saveSettings'])->name('admin.settings.save');
+    
+    // Provider Management
+    Route::post('/admin/providers', [PaymentController::class, 'storeProvider'])->name('admin.providers.store');
+    Route::put('/admin/providers/{id}/update', [PaymentController::class, 'updateProvider'])->name('admin.providers.update');
+    Route::delete('/admin/providers/{id}', [PaymentController::class, 'deleteProvider'])->name('admin.providers.delete');
 });
