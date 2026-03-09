@@ -170,7 +170,15 @@
                         <div class="col-md-4">
                             <div class="card shadow-sm text-center p-4">
                                 <h5 class="mb-3">{{ __('messages.site_qr') }}</h5>
-                                <p class="small text-muted">{{ __('messages.scan_qr') }}</p>
+                                <p class="small text-muted mb-2">{{ __('messages.scan_qr') }}</p>
+                                
+                                <div class="input-group input-group-sm mb-3">
+                                    <input type="text" id="qr-target-url" class="form-control" value="{{ config('app.url') }}" placeholder="Target URL">
+                                    <button class="btn btn-outline-secondary" type="button" onclick="generateQR()" title="Regenerate QR Code">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                </div>
+
                                 <div id="qrcode" class="mb-3 d-flex justify-content-center"></div>
                                 <div class="mt-2">
                                     <button class="btn btn-sm btn-primary" onclick="downloadQR()">
@@ -443,24 +451,40 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <script>
     const qrContainer = document.getElementById("qrcode");
-    const siteUrl = window.location.origin;
-    
-    new QRCode(qrContainer, {
-        text: siteUrl,
-        width: 180,
-        height: 180,
-        colorDark : "#000000",
-        colorLight : "#ffffff",
-        correctLevel : QRCode.CorrectLevel.H
-    });
+
+    function generateQR() {
+        qrContainer.innerHTML = ""; // Clear existing QR code
+        const urlInput = document.getElementById("qr-target-url");
+        const targetUrl = urlInput && urlInput.value ? urlInput.value : window.location.origin;
+        
+        new QRCode(qrContainer, {
+            text: targetUrl,
+            width: 180,
+            height: 180,
+            colorDark : "#000000",
+            colorLight : "#ffffff",
+            correctLevel : QRCode.CorrectLevel.H
+        });
+    }
+
+    // Initialize QR code on load
+    generateQR();
 
     function downloadQR() {
-        const img = qrContainer.querySelector('img');
-        if (img) {
+        const canvas = qrContainer.querySelector('canvas');
+        if (canvas) {
             const link = document.createElement('a');
-            link.href = img.src;
+            link.href = canvas.toDataURL("image/png");
             link.download = 'kibubu-qr-code.png';
             link.click();
+        } else {
+            const img = qrContainer.querySelector('img');
+            if (img && img.src) {
+                const link = document.createElement('a');
+                link.href = img.src;
+                link.download = 'kibubu-qr-code.png';
+                link.click();
+            }
         }
     }
 
