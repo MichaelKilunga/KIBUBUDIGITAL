@@ -86,7 +86,12 @@
                     <div class="card payment-card h-100 p-3 text-center" onclick="handleMobilePayment('{{ $provider->name }}', '{{ $provider->ussd_string }}')">
                         <div class="fw-bold mb-2">{{ $provider->name }}</div>
                         <div class="small text-muted mb-3">{{ $provider->account_number }}</div>
-                        <a href="tel:{{ $provider->ussd_string }}" class="btn btn-ussd mt-auto">{{ __('messages.pay_via_ussd') }}</a>
+                        <div class="d-flex gap-2 mt-auto">
+                            <button type="button" class="btn btn-outline-secondary flex-shrink-0" onclick="event.stopPropagation(); copyToClipboard('{{ $provider->account_number }}', '{{ $provider->name }}')" title="{{ __('messages.tap_to_copy') }}">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                            <a href="tel:{{ $provider->ussd_string }}" class="btn btn-ussd flex-grow-1">{{ __('messages.pay_via_ussd') }}</a>
+                        </div>
                     </div>
                 </div>
                 @endforeach
