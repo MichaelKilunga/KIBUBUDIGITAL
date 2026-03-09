@@ -46,6 +46,24 @@
         .section-title {
             color: var(--section-title-color) !important;
         }
+        .custom-pills .nav-link {
+            color: var(--text-color);
+            background-color: var(--card-bg);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 10px;
+            margin: 0 5px;
+            padding: 12px 20px;
+            transition: all 0.3s ease;
+        }
+        .custom-pills .nav-link.active {
+            background-color: var(--primary-gold);
+            color: var(--bg-color) !important; /* using bg color for text to give contrast */
+            border-color: var(--primary-gold);
+        }
+        .custom-pills .nav-link:hover:not(.active) {
+            border-color: var(--primary-gold);
+            color: var(--text-color);
+        }
         .text-muted {
             color: rgba(255,255,255,0.6) !important;
         }
@@ -77,43 +95,70 @@
     </section>
 
     <div class="container my-5">
-        <!-- Mobile Money Section -->
-        <div class="mb-5">
-            <h2 class="section-title">{{ $allSettings['mobile_money_title_' . app()->getLocale()] ?? __('messages.mobile_money') }}</h2>
-            <div class="row g-3">
-                @foreach($mobileProviders as $provider)
-                <div class="col-6 col-md-3">
-                    <div class="card payment-card h-100 p-3 text-center" onclick="handleMobilePayment('{{ $provider->name }}', '{{ $provider->ussd_string }}')">
-                        <div class="fw-bold mb-2">{{ $provider->name }}</div>
-                        <div class="small text-muted mb-3">{{ $provider->account_number }}</div>
-                        <div class="d-flex gap-2 mt-auto">
-                            <button type="button" class="btn btn-outline-secondary flex-shrink-0" onclick="event.stopPropagation(); copyToClipboard('{{ $provider->account_number }}', '{{ $provider->name }}')" title="{{ __('messages.tap_to_copy') }}">
-                                <i class="fas fa-copy"></i>
-                            </button>
-                            <a href="tel:{{ $provider->ussd_string }}" class="btn btn-ussd flex-grow-1">{{ __('messages.pay_via_ussd') }}</a>
-                        </div>
-                    </div>
+        <!-- Search Bar -->
+        <div class="row mb-4 justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-end-0" style="border-radius: 20px 0 0 20px; border-color: var(--primary-gold); color: var(--primary-gold);">
+                        <i class="fas fa-search"></i>
+                    </span>
+                    <input type="text" id="providerSearch" class="form-control form-control-lg border-start-0" placeholder="Search / Tafuta..." style="border-radius: 0 20px 20px 0; border-color: var(--primary-gold); box-shadow: none; background-color: var(--card-bg); color: var(--text-color);">
                 </div>
-                @endforeach
             </div>
         </div>
 
-        <!-- Bank Section -->
-        <div>
-            <h2 class="section-title">{{ $allSettings['bank_title_' . app()->getLocale()] ?? __('messages.bank_transfer') }}</h2>
-            <div class="row g-3">
-                @foreach($bankProviders as $provider)
-                <div class="col-12 col-md-4">
-                    <div class="card payment-card p-3 position-relative" onclick="copyToClipboard('{{ $provider->account_number }}', '{{ $provider->name }}')">
-                        <span class="copy-badge"><i class="fas fa-copy me-1"></i> {{ __('messages.tap_to_copy') }}</span>
-                        <div class="fw-bold h5 mb-1">{{ $provider->name }}</div>
-                        <div class="bank-details">
-                            <span class="text-muted">{{ __('messages.account_number') }}:</span>
-                            <div class="h4 fw-bold mt-1">{{ $provider->account_number }}</div>
+        <!-- Tabs Nav -->
+        <ul class="nav nav-pills nav-fill mb-4 custom-pills" id="paymentTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active fw-bold" id="mobile-tab" data-bs-toggle="pill" data-bs-target="#mobile-content" type="button" role="tab" aria-controls="mobile-content" aria-selected="true">
+                    <i class="fas fa-mobile-alt me-2"></i>{{ $allSettings['mobile_money_title_' . app()->getLocale()] ?? __('messages.mobile_money') }}
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link fw-bold" id="bank-tab" data-bs-toggle="pill" data-bs-target="#bank-content" type="button" role="tab" aria-controls="bank-content" aria-selected="false">
+                    <i class="fas fa-university me-2"></i>{{ $allSettings['bank_title_' . app()->getLocale()] ?? __('messages.bank_transfer') }}
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tabs Content -->
+        <div class="tab-content" id="paymentTabsContent">
+            <!-- Mobile Money Section -->
+            <div class="tab-pane fade show active" id="mobile-content" role="tabpanel" aria-labelledby="mobile-tab">
+                <div class="row g-3">
+                    @foreach($mobileProviders as $provider)
+                    <div class="col-6 col-md-3">
+                        <div class="card payment-card h-100 p-3 text-center" onclick="handleMobilePayment('{{ $provider->name }}', '{{ $provider->ussd_string }}')">
+                            <div class="fw-bold mb-2">{{ $provider->name }}</div>
+                            <div class="small text-muted mb-3">{{ $provider->account_number }}</div>
+                            <div class="d-flex gap-2 mt-auto">
+                                <button type="button" class="btn btn-outline-secondary flex-shrink-0" onclick="event.stopPropagation(); copyToClipboard('{{ $provider->account_number }}', '{{ $provider->name }}')" title="{{ __('messages.tap_to_copy') }}">
+                                    <i class="fas fa-copy"></i>
+                                </button>
+                                <a href="tel:{{ $provider->ussd_string }}" class="btn btn-ussd flex-grow-1">{{ __('messages.pay_via_ussd') }}</a>
+                            </div>
                         </div>
                     </div>
+                    @endforeach
                 </div>
-                @endforeach
+            </div>
+
+            <!-- Bank Section -->
+            <div class="tab-pane fade" id="bank-content" role="tabpanel" aria-labelledby="bank-tab">
+                <div class="row g-3">
+                    @foreach($bankProviders as $provider)
+                    <div class="col-12 col-md-4">
+                        <div class="card payment-card p-3 position-relative" onclick="copyToClipboard('{{ $provider->account_number }}', '{{ $provider->name }}')">
+                            <span class="copy-badge"><i class="fas fa-copy me-1"></i> {{ __('messages.tap_to_copy') }}</span>
+                            <div class="fw-bold h5 mb-1">{{ $provider->name }}</div>
+                            <div class="bank-details">
+                                <span class="text-muted">{{ __('messages.account_number') }}:</span>
+                                <div class="h4 fw-bold mt-1">{{ $provider->account_number }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
             </div>
         </div>
     </div>
@@ -183,6 +228,17 @@
         function getDeviceTheme() {
             return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
         }
+
+        $(document).ready(function() {
+            $('#providerSearch').on('keyup', function() {
+                var value = $(this).val().toLowerCase();
+                // Filter within the currently active tab or across all
+                $('.payment-card').parent().filter(function() {
+                    var providerName = $(this).find('.fw-bold').first().text().toLowerCase();
+                    $(this).toggle(providerName.indexOf(value) > -1);
+                });
+            });
+        });
     </script>
     <script>
         if ('serviceWorker' in navigator) {
