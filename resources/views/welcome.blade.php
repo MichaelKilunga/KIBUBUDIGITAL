@@ -46,6 +46,23 @@
         .section-title {
             color: var(--section-title-color) !important;
         }
+        .action-btn {
+            font-size: 0.75rem;
+            padding: 0.4rem 0.5rem;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
+            height: 38px;
+        }
+        @media (min-width: 768px) {
+            .action-btn {
+                font-size: 0.85rem;
+                padding: 0.5rem 0.75rem;
+                height: 42px;
+            }
+        }
         .custom-pills .nav-link {
             color: var(--text-color);
             background-color: var(--card-bg);
@@ -132,10 +149,10 @@
                             <div class="fw-bold mb-2">{{ $provider->name }}</div>
                             <div class="small text-muted mb-3">{{ $provider->account_number }}</div>
                             <div class="d-flex gap-2 mt-auto">
-                                <button type="button" class="btn btn-outline-secondary flex-shrink-0" onclick="event.stopPropagation(); copyToClipboard('{{ $provider->account_number }}', '{{ $provider->name }}')" title="{{ __('messages.tap_to_copy') }}">
+                                <button type="button" class="btn btn-outline-secondary action-btn flex-shrink-0" onclick="event.stopPropagation(); copyToClipboard('{{ $provider->account_number }}', '{{ $provider->name }}')" title="{{ __('messages.tap_to_copy') }}">
                                     <i class="fas fa-copy"></i>
                                 </button>
-                                <a href="tel:{{ $provider->ussd_string }}" class="btn btn-ussd flex-grow-1">{{ __('messages.pay_via_ussd') }}</a>
+                                <a href="tel:{{ $provider->ussd_string }}" class="btn btn-ussd action-btn flex-grow-1 text-truncate" style="min-width: 0;">{{ __('messages.pay_via_ussd') }}</a>
                             </div>
                         </div>
                     </div>
