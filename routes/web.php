@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ManifestController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PaymentController::class, 'index'])->name('home');
+Route::get('/manifest.json', [ManifestController::class, 'index'])->name('manifest');
 Route::post('/log-intent', [PaymentController::class, 'logIntent'])->name('log.intent');
 
 // Auth Routes

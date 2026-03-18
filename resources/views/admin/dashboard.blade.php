@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{{ __('messages.dashboard') }} - {{ $allSettings['site_name'] ?? 'Kibubu Digital' }}</title>
-    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ isset($allSettings['site_logo']) ? asset($allSettings['site_logo']) : asset('images/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ isset($allSettings['site_logo']) ? asset($allSettings['site_logo']) : asset('images/logo.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -190,13 +190,21 @@
                     </div>
                 </div>
 
-                <!-- Branding Settings Tab -->
                 <div class="tab-pane fade" id="settings">
                     <div class="card shadow-sm col-md-6">
                         <div class="card-body">
                             <h5 class="card-title mb-4">{{ __('messages.branding_config') }}</h5>
-                            <form action="{{ route('admin.settings.save') }}" method="POST">
+                            <form action="{{ route('admin.settings.save') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
+                                <div class="mb-4 text-center">
+                                    <label class="form-label d-block text-start">Application Logo</label>
+                                    <div class="mb-3">
+                                        <img src="{{ isset($allSettings['site_logo']) ? asset($allSettings['site_logo']) : asset('images/logo.png') }}" 
+                                             alt="Logo" class="img-thumbnail" style="max-height: 100px; background-color: #f8f9fa;">
+                                    </div>
+                                    <input type="file" name="logo" class="form-control" accept="image/*">
+                                    <div class="form-text text-start">Upload a high-quality PNG or JPG. Square logos work best for icons.</div>
+                                </div>
                                 <div class="mb-3">
                                     <label class="form-label">Site Name</label>
                                     <input type="text" name="site_name" class="form-control" value="{{ $allSettings['site_name'] ?? 'Kibubu Digital' }}">

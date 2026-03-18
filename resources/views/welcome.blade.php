@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ $allSettings['site_name'] ?? 'Kibubu Changu na Dorcas' }} - Charity Drive</title>
-    <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="{{ route('manifest') }}">
     <meta name="theme-color" content="{{ $allSettings['primary_color'] ?? '#D4AF37' }}">
-    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
-    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ isset($allSettings['site_logo']) ? asset($allSettings['site_logo']) : asset('images/logo.png') }}">
+    <link rel="apple-touch-icon" href="{{ isset($allSettings['site_logo']) ? asset($allSettings['site_logo']) : asset('images/logo.png') }}">
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
@@ -104,7 +104,9 @@
             </div>
             <a href="{{ route('login') }}" class="btn btn-sm btn-outline-light border-0 opacity-75"><i class="fas fa-lock me-1"></i> {{ __('messages.admin') }}</a>
         </div>
-        <div class="container">
+        <div class="container mb-4">
+            <img src="{{ isset($allSettings['site_logo']) ? asset($allSettings['site_logo']) : asset('images/logo.png') }}" 
+                 alt="{{ $allSettings['site_name'] ?? 'Logo' }}" class="img-fluid mb-3" style="max-height: 80px;">
             <h1 class="display-5 fw-bold mb-3">{{ $allSettings['hero_title_' . app()->getLocale()] ?? __('messages.hero_title') }}</h1>
             <p class="slogan mb-4">{{ $allSettings['slogan_' . app()->getLocale()] ?? __('messages.slogan') }}</p>
             <p class="lead px-4">{{ $allSettings['hero_lead_' . app()->getLocale()] ?? __('messages.hero_lead') }}</p>

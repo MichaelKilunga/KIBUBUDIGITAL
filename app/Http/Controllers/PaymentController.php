@@ -55,7 +55,14 @@ class PaymentController extends Controller
 
     public function saveSettings(Request $request)
     {
-        $data = $request->except('_token');
+        $data = $request->except(['_token', 'logo']);
+        
+        // Handle logo upload
+        if ($request->hasFile('logo')) {
+            $logo = $request->file('logo');
+            $logoPath = $logo->store('branding', 'public');
+            \App\Models\Setting::updateOrCreate(['key' => 'site_logo'], ['value' => 'storage/' . $logoPath]);
+        }
         
         foreach ($data as $key => $value) {
             \App\Models\Setting::updateOrCreate(['key' => $key], ['value' => $value]);
