@@ -8,6 +8,8 @@
     <link rel="apple-touch-icon" href="{{ isset($allSettings['site_logo']) ? asset($allSettings['site_logo']) : asset('images/logo.png') }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
     <style>
         :root {
             --primary-gold: #D4AF37;
@@ -139,7 +141,7 @@
                             <div class="card shadow-sm">
                                 <div class="card-header bg-white fw-bold">{{ __('messages.recent_logs') }}</div>
                                 <div class="table-responsive">
-                                    <table class="table table-hover mb-0">
+                                    <table id="intents-table" class="table table-hover mb-0 w-100">
                                         <thead class="table-light">
                                             <tr>
                                                 <th>{{ __('messages.provider') }}</th>
@@ -159,9 +161,6 @@
                                             @endforeach
                                         </tbody>
                                     </table>
-                                </div>
-                                <div class="card-footer bg-white">
-                                    {{ $intents->links() }}
                                 </div>
                             </div>
                         </div>
@@ -313,7 +312,7 @@
                             </button>
                         </div>
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table id="providers-table" class="table table-hover mb-0 w-100">
                                 <thead class="table-light">
                                     <tr>
                                         <th>Name</th>
@@ -457,6 +456,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/responsive.bootstrap5.min.js"></script>
 <script>
     const qrContainer = document.getElementById("qrcode");
 
@@ -535,6 +539,42 @@
 
     // Restore active tab from localStorage if available
     document.addEventListener('DOMContentLoaded', function () {
+        // Initialize DataTables
+        const intentsTable = $('#intents-table').DataTable({
+            responsive: true,
+            pageLength: 10,
+            order: [[3, 'desc']],
+            language: {
+                search: "{{ __('messages.search') }}:",
+                lengthMenu: "_MENU_ per page",
+                info: "Showing _START_ to _END_ of _TOTAL_ entries",
+                paginate: { previous: "‹", next: "›" }
+            },
+            columnDefs: [{ targets: [0, 1, 2], responsivePriority: 1 }, { targets: 3, responsivePriority: 2 }]
+        });
+
+        const providersTable = $('#providers-table').DataTable({
+            responsive: true,
+            pageLength: 25,
+            order: [[0, 'asc']],
+            language: {
+                search: "{{ __('messages.search') }}:",
+                lengthMenu: "_MENU_ per page",
+                emptyTable: "No providers added yet.",
+            },
+            columnDefs: [{ targets: -1, orderable: false, searchable: false }]
+        });
+
+        // Re-draw DataTables when their tab is shown (fixes column width glitch in hidden tabs)
+        document.querySelectorAll('button[data-bs-toggle="tab"]').forEach(tab => {
+            tab.addEventListener('shown.bs.tab', function (event) {
+                const target = event.target.getAttribute('data-bs-target');
+                localStorage.setItem('kibubu_admin_active_tab', target);
+                if (target === '#overview') intentsTable.columns.adjust().responsive.recalc();
+                if (target === '#providers') providersTable.columns.adjust().responsive.recalc();
+            });
+        });
+
         const activeTab = localStorage.getItem('kibubu_admin_active_tab');
         if (activeTab) {
             const tabButton = document.querySelector(`button[data-bs-target="${activeTab}"]`);
@@ -543,15 +583,6 @@
                 tabInstance.show();
             }
         }
-
-        // Save active tab to localStorage when a tab is shown
-        const tabList = document.querySelectorAll('button[data-bs-toggle="tab"]');
-        tabList.forEach(tab => {
-            tab.addEventListener('shown.bs.tab', function (event) {
-                const target = event.target.getAttribute('data-bs-target');
-                localStorage.setItem('kibubu_admin_active_tab', target);
-            });
-        });
     });
 </script>
 </body>
